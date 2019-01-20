@@ -1,13 +1,17 @@
+/**
+ * @author Dalton Caron
+ * @version 1/20/2019
+ */
 #include "uart.h"
 #include <msp430fr5969.h>
 
 #define READ_BUFFER_MAX 100
 #define WRITE_BUFFER_MAX 100
 
-char read_buffer[READ_BUFFER_MAX];
-unsigned int read_buffer_offset = 0;
-char write_buffer[WRITE_BUFFER_MAX];
-unsigned int write_buffer_offset = 0;
+static char read_buffer[READ_BUFFER_MAX];
+static unsigned int read_buffer_offset = 0;
+static char write_buffer[WRITE_BUFFER_MAX];
+static unsigned int write_buffer_offset = 0;
 
 static char rx_char;
 
@@ -20,7 +24,7 @@ static char rx_char;
  * Modes
  * 0 - Passive mode allows a user to rx what they tx.
  * 1 - Reads key inputs into buffer until terminated by newline.
- * 2 - Writing content in the wirte buffer, unable to process input.
+ * 2 - Writing content in the write buffer, unable to process input.
  * 3 - Single byte read mode.
  */
 unsigned int mode = PASSIVE_MODE;
@@ -47,8 +51,8 @@ void uart_init()
 
 char uart_read_char()
 {
-    mode = 3;
-    while(mode == 3);
+    mode = SINGLE_BYTE_READ_MODE;
+    while(mode == SINGLE_BYTE_READ_MODE);
     return rx_char;
 }
 
@@ -60,9 +64,9 @@ void uart_write_char(const char c)
 
 char *uart_read_string()
 {
-    mode = 1;
+    mode = BUFFERED_READ_MODE;
     read_buffer_offset = 0;
-    while(mode == 1);
+    while(mode == BUFFERED_READ_MODE);
     return read_buffer;
 }
 
@@ -76,13 +80,13 @@ void uart_write_string(const char *string)
     }
     write_buffer[c] = '\0';
     write_buffer_offset = 0;
-    mode = 2;
+    mode = BUFFERED_WRITE_MODE;
     while(write_buffer[write_buffer_offset] ^ '\0')
     {
         while(!(UCA0IFG&UCTXIFG));
         UCA0TXBUF = write_buffer[write_buffer_offset++];
     }
-    mode = 0;
+    mode = PASSIVE_MODE;
 }
 
 void put_newline()
@@ -98,14 +102,14 @@ __interrupt void USCI_A0_ISR(void)
   {
     case USCI_NONE: break;
     case USCI_UART_UCRXIFG:
-      if(mode == 1)                             // read mode
+      if(mode == BUFFERED_READ_MODE)            // read mode
       {
           while(!(UCA0IFG&UCTXIFG));
           char c = UCA0RXBUF;
           if(c == '\n' || c == '\r' || c == '\0')
           {
               read_buffer[read_buffer_offset] = '\0';
-              mode = 0;
+              mode = PASSIVE_MODE;
               return;
           }
           read_buffer[read_buffer_offset++] = c;
@@ -116,9 +120,9 @@ __interrupt void USCI_A0_ISR(void)
           while(!(UCA0IFG&UCTXIFG));
           rx_char = UCA0RXBUF;
           UCA0TXBUF = rx_char;
-          mode = 0;
+          mode = PASSIVE_MODE;
       }
-      else if(mode == 0)                        // passive mode
+      else if(mode == PASSIVE_MODE)             // passive mode
       {
           while(!(UCA0IFG&UCTXIFG));
               UCA0TXBUF = UCA0RXBUF;

@@ -14,5 +14,9 @@ int main(void)
 	    put_newline();
 	    uart_write_char(s);
 	    put_newline();
+	    char *ss = uart_read_string();
+	    put_newline();
+	    uart_write_string(ss);
+	    put_newline();
 	}
 }
