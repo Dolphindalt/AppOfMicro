@@ -1,0 +1,7 @@
+/.metadata/
+.jxbrowser*
+.metadata*
+Release/*
+.xdchelp
+config/*
+.launches/*
