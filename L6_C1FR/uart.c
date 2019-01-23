@@ -95,8 +95,42 @@ void put_newline()
     uart_write_char('\r');
 }
 
+int primitive_to_buffer(char *buffer, unsigned int buffer_size, int primitive)
+{
+    if(buffer_size < 2) return 0;
+    if(primitive == 0)                          // test special case
+    {
+            buffer[0] = '0';
+            buffer[1] = '\0';
+            return 1;
+    }
+    unsigned int buffer_ptr = 0, i;
+    int negative = primitive < 0;
+    unsigned int n = negative ? -primitive : primitive;
+    while(n)                                    // calculate each digit
+    {
+        if(buffer_ptr >= buffer_size) return 0;
+        buffer[buffer_ptr++] = n % 10 + '0';
+        n /= 10;
+    }
+    if(negative)                                // include the minus if negative
+    {
+        if(buffer_ptr >= buffer_size) return 0;
+        buffer[buffer_ptr++] = '-';
+    }
+    if(buffer_ptr >= buffer_size) return 0;
+    buffer[buffer_ptr] = '\0';
+    for(i = 0; i < buffer_ptr/2; i++)           // swap the order of the string
+    {
+        buffer[i] ^= buffer[buffer_ptr-i-1];
+        buffer[buffer_ptr-i-1] ^= buffer[i];
+        buffer[i] ^= buffer[buffer_ptr-i-1];
+    }
+    return 1;
+}
+
 #pragma vector=USCI_A0_VECTOR
-__interrupt void USCI_A0_ISR(void)
+__interrupt void USCI_A0_ISR()
 {
   switch(__even_in_range(UCA0IV, USCI_UART_UCTXCPTIFG))
   {

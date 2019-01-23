@@ -40,4 +40,12 @@ void put_newline();
  */
 void uart_write_string(const char *);
 
+/**
+ * Converts a primitive signed integer type into a string.
+ * @param char * The buffer to write the string to.
+ * @param unsigned int The size of the buffer.
+ * @param int The numerical value to translate into string form.
+ */
+int primitive_to_buffer(char *, unsigned int, int);
+
 #endif

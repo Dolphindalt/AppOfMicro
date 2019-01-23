@@ -10,13 +10,17 @@ int main(void)
 
 	while(1)
 	{
-	    char s = uart_read_char();
+	    char buffer[50];
+	    primitive_to_buffer(buffer, 50, 1);
+	    uart_write_string(buffer);
 	    put_newline();
-	    uart_write_char(s);
+	    primitive_to_buffer(buffer, 50, -1);
+	    uart_write_string(buffer);
 	    put_newline();
-	    char *ss = uart_read_string();
+	    primitive_to_buffer(buffer, 50, 0);
+	    uart_write_string(buffer);
 	    put_newline();
-	    uart_write_string(ss);
+	    uart_read_char();
 	    put_newline();
 	}
 }
