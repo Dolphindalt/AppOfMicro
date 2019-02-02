@@ -12,12 +12,12 @@ int main()
 
     while(1)
     {
-        char c;
-        int code = keypad_read_char(&c);
+        char code = keypad_poll();
         if(code)
         {
-            uart_write_char(c);
+            uart_write_char(code);
             put_newline();
         }
+        __delay_cycles(50000);
     }
 }
