@@ -129,6 +129,31 @@ int primitive_to_buffer(char *buffer, unsigned int buffer_size, int primitive)
     return 1;
 }
 
+// O(log(n))
+static unsigned int power(unsigned int a, unsigned int b)
+{
+    unsigned int temp;
+    if(b == 0) return 1;
+    temp = power(a, b/2);
+    if(b%2 == 0) return temp * temp;
+    else return a*temp*temp;
+}
+
+int buffer_to_primitive(char *buff, unsigned int *result)
+{
+    *result = 0;
+    unsigned int i = 0;
+    unsigned int size = 0;
+    while(buff[i++] ^ '\0');
+    size = i-1;
+    if(size == 0) return 0;
+    for(i = 0; buff[i] ^ 0; i++)
+    {
+        *result += power(10, size-i-1) * (buff[i] - '0');
+    }
+    return 1;
+}
+
 #pragma vector=USCI_A0_VECTOR
 __interrupt void USCI_A0_ISR()
 {
@@ -140,13 +165,19 @@ __interrupt void USCI_A0_ISR()
       {
           while(!(UCA0IFG&UCTXIFG));
           char c = UCA0RXBUF;
-          if(c == '\n' || c == '\r' || c == '\0')
+          if(c == 8)                            // backspace
+          {
+              if(read_buffer_offset > 0)
+                  read_buffer[read_buffer_offset--] = '\0';
+          }
+          else if(c == '\n' || c == '\r' || c == '\0')
           {
               read_buffer[read_buffer_offset] = '\0';
               mode = PASSIVE_MODE;
               return;
           }
-          read_buffer[read_buffer_offset++] = c;
+          else
+              read_buffer[read_buffer_offset++] = c;
           UCA0TXBUF = c;
       }
       else if(mode == 3)                        // single char read mode

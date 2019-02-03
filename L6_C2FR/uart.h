@@ -48,4 +48,6 @@ void uart_write_string(const char *);
  */
 int primitive_to_buffer(char *, unsigned int, int);
 
+int buffer_to_primitive(char *buff, unsigned int *result);
+
 #endif
