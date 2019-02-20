@@ -1,8 +1,8 @@
 #ifndef LED_H
 #define LED_H
 
-#define SLAVE_ADDRESS 0x70
-#define DISPLAY_FOUR_CONTROL_BITS 0x46
+#define SLAVE_ADDRESS 0x76
+#define CONTROL 0x77
 
 void send_char_to_digit(char sub, char cbs, char *c);
 

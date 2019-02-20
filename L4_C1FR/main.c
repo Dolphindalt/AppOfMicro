@@ -9,10 +9,7 @@ int main(void)
 	
 	i2c_init();
 
-	char *s = "1";
+	char *s = "1234";
 
-	while(1)
-	{
-	    send_char_to_digit(0x01, DISPLAY_FOUR_CONTROL_BITS, s);
-	}
+	send_char_to_digit(0, 0x77, s);
 }

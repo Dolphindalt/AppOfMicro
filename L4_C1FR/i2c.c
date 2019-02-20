@@ -1,8 +1,8 @@
 #include <msp430fr5969.h>
 #include "i2c.h"
 
-#define SCL BIT0
-#define SDA BIT6
+#define SCL BIT2
+#define SDA BIT3
 #define clear_sda() P4DIR |= SDA; P4OUT &=~(SDA)
 #define clear_scl() P1DIR |= SCL; P1OUT &=~(SCL)
 #define set_sda() P4DIR &=~SDA; P4OUT |= SDA
