@@ -4,6 +4,8 @@
 #define SLAVE_ADDRESS 0x76
 #define CONTROL 0x77
 
-void send_char_to_digit(char sub, char cbs, char *c);
+void led_init();
+
+void led_send_chars(char sub, char cbs, char *c);
 
 #endif

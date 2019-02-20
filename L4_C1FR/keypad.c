@@ -5,12 +5,12 @@
 #include<msp430fr5969.h>
 #include "keypad.h"
 
-#define INPUT_PINS (BIT2 | BIT3 | BIT4 | BIT5)
+#define INPUT_PINS (BIT7 | BIT3 | BIT4 | BIT5)
 
 static char reading = 0;
 static char global_char = '\0';
 static const int cycles[4] = { BIT5 | BIT6, BIT6, BIT5, 0 };
-static const int inputs[4] = { BIT2, BIT3, BIT4, BIT5 };
+static const int inputs[4] = { BIT7, BIT3, BIT4, BIT5 };
 static const char keymap[4][4] = {
                              { '1', '2', '3', 'A' },
                              { '4', '5', '6', 'B' },
@@ -20,7 +20,7 @@ static const char keymap[4][4] = {
 
 void keypad_init()
 {
-    // keypad inputs 1.3 1.4 1.5 1.2
+    // keypad inputs 1.3 1.4 1.5 1.7
     P1DIR &=~INPUT_PINS;
     P1REN |=INPUT_PINS;
     P1OUT |=INPUT_PINS;
