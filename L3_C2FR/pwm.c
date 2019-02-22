@@ -22,11 +22,13 @@ void pwm_TA1_init(int duty_cycle_1, int duty_cycle_2)
 
 void pwm_B0_init(int duty_cycle_1, int duty_cycle_2)
 {
+    duty_cycle_1 *= 8;
+    duty_cycle_2 *= 8;
     P1DIR |= BIT4;
     P1SEL0 |= BIT4;
     P1SEL1 &=~(BIT4);
 
-    TB0CCR0 = 2000;
+    TB0CCR0 = 2000 * 8;
     TB0CCTL1 = OUTMOD_7;
     TB0CCR1 = duty_cycle_1;
     TB0CCTL2 = OUTMOD_7;
