@@ -29,8 +29,11 @@ void spi_write(char data, char rw)
         data <<= 1;
         P2OUT &=~CLK;
         P2OUT |= CLK;
+        spi_delay();
         P2OUT &=~CLK;
+        spi_delay();
         ctr++;
     }
     P2OUT |= CS;
+    spi_delay();
 }

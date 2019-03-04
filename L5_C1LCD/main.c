@@ -1,6 +1,7 @@
 #include <msp430.h>
 #include "lcd.h"
 #include "spi.h"
+#include "keypad.h"
 
 int main(void)
 {
@@ -8,13 +9,19 @@ int main(void)
 	
 	__bis_SR_register(GIE);
 
-	lcd_init();
+	keypad_init();
 	spi_init();
+	lcd_init();
 
-	char s[5] = { 0x03, '\0' };
+	lcd_set_ddram(0x00);
+	char c;
 	while(1)
 	{
-	    lcd_write_characters(s);
+	    keypad_poll();
 	    __delay_cycles(50000);
+	    if(keypad_read_char(&c))
+	    {
+	        lcd_write_character(c);
+	    }
 	}
 }

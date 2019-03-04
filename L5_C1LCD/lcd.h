@@ -3,8 +3,8 @@
 
 void lcd_init();
 
-void lcd_set_ddram(char address);
+void lcd_set_ddram(char);
 
-void lcd_write_characters(char *characters);
+void lcd_write_character(char);
 
 #endif
