@@ -12,16 +12,19 @@ int main(void)
 	keypad_init();
 	spi_init();
 	lcd_init();
+	lcd_display_on_off(1, 0, 1);
 
 	lcd_set_ddram(0x00);
 	char c;
 	while(1)
 	{
 	    keypad_poll();
-	    __delay_cycles(50000);
 	    if(keypad_read_char(&c))
 	    {
-	        lcd_write_character(c);
+	        if(c == '*')
+	            lcd_delete_backward(1);
+	        else
+	            lcd_write_character(c);
 	    }
 	}
 }

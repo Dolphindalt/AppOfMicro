@@ -42,7 +42,7 @@ int keypad_read_char(char *c)
     {
         *c = global_char;
         reading = 0;
-        __delay_cycles(50000);
+        __delay_cycles(60000);
         return 1;
     }
     return 0;
