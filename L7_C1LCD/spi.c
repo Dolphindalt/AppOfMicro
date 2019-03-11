@@ -1,7 +1,7 @@
 #include "spi.h"
 #include <msp430.h>
 
-#define RS BIT6
+#define RS BIT2
 #define MOSI BIT3
 #define CLK BIT4
 #define CS BIT5

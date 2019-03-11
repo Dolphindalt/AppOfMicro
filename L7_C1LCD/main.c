@@ -1,4 +1,4 @@
-#include <msp430fr5969.h>
+#include <msp430.h>
 #include "spi.h"
 #include "lcd.h"
 #include "adc.h"
@@ -8,7 +8,6 @@ int primitive_to_buffer(char *buffer, unsigned int buffer_size, int primitive);
 int main(void)
 {
 	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
-	PM5CTL0 &=(~LOCKLPM5);
 	__bis_SR_register(GIE);
 	
 	spi_init();
@@ -23,6 +22,8 @@ int main(void)
 	    lcd_set_ddram(0x00);
 	    for(i = 0; buf[i] != '\0'; i++)
 	        lcd_write_character(buf[i]);
+	    for(; i < 16; i++)
+	        lcd_write_character(0x01);
 	    __delay_cycles(50000);
 	}
 }
