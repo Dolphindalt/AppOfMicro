@@ -3,7 +3,7 @@
 #include "spi.h"
 #include "lcd.h"
 
-#define SLAVE_ADDR  0x60
+#define SLAVE_ADDR  0x01
 
 #define LCD_SLAVE_CMD_0 0x01
 #define LCD_SLAVE_CMD_0_LEN 1
@@ -58,7 +58,6 @@ void I2C_Slave_ProcessCMD(uint8_t cmd)
             break;
     }
 }
-
 
 void I2C_Slave_TransactionDone(uint8_t cmd)
 {

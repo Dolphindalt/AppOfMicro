@@ -1,7 +1,7 @@
 #include <msp430g2253.h>
 #include "i2c.h"
 
-#define SCL BIT2
+#define SCL BIT5
 #define SDA BIT3
 #define clear_sda() P1DIR |= SDA; P1OUT &=~(SDA)
 #define clear_scl() P1DIR |= SCL; P1OUT &=~(SCL)
@@ -16,10 +16,17 @@ void i2c_init()
 {
     set_sda();
     set_scl();
-    P1REN |= SDA;
-    P1REN |= SCL;
+    //P1REN |= SDA;
+    //P1REN |= SCL;
     P1OUT &=~SDA;
     P1OUT &=~SCL;
+}
+
+void i2c_send_address(char a, char rw)
+{
+    a <<= 1;
+    if(rw & 0x01) a |= 0x01;
+    i2c_send_byte(a);
 }
 
 char i2c_read_sda()
@@ -77,7 +84,12 @@ void i2c_send_byte(char byte)
         byte <<= 1;
         ctr++;
     }
-    (void) i2c_read_bit();
+    i2c_delay();
+    clear_sda();
+    set_scl();
+    i2c_delay();
+    clear_scl();
+    //(void) i2c_read_bit();
 }
 
 char i2c_read_byte()

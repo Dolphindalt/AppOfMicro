@@ -3,6 +3,8 @@
 
 void i2c_init();
 
+void i2c_send_address(char a, char rw);
+
 void i2c_send_start();
 
 void i2c_send_end();

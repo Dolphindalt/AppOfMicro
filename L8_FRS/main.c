@@ -1,6 +1,6 @@
 #include <msp430fr5969.h>
 #include <stdint.h>
-
+ // 1.7 clock 1.6 sda
 #define SLAVE_ADDRESS 0x50
 #define pollZeroButton() (!(P4IN & BIT5 == BIT5))
 #define pollOneButton() (!(P1IN & BIT1 == BIT1))
