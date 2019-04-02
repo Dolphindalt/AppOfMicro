@@ -1,12 +1,12 @@
 #include "spi.h"
 #include <msp430.h>
 
-#define RS BIT6
+#define RS BIT2
 #define MOSI BIT3
 #define CLK BIT4
 #define CS BIT5
 
-#define DELAY 500
+#define DELAY 250
 #define spi_delay() __delay_cycles(DELAY)
 
 void spi_init()

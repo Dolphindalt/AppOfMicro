@@ -1,0 +1,1 @@
+"./lcd.obj" "./main.obj" "./spi.obj" "../lnk_msp430g2253.cmd" -llibc.a 
