@@ -1,30 +1,69 @@
-#include <msp430.h> 
+#include "vu.h"
 #include "spi.h"
 #include "lcd.h"
 #include "adc.h"
 
-int primitive_to_buffer(char *buffer, unsigned int buffer_size, int primitive);
+#define DAS 50
+#define AMP 10
 
-int main(void)
+int digital_values[DAS];
+unsigned long average;
+
+void vu_init()
 {
-	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
-	__bis_SR_register(GIE);
-	spi_init();
-	lcd_init();
-	adc_init();
+    spi_init();
+    lcd_init();
+    adc_init();
+}
 
-    char buf[12], i;
-    while(1)
+void vu_tick()
+{
+    unsigned int i;
+    average = 0;
+    for(i = 0; i < DAS; i++)
     {
         adc_start_sample();
-        primitive_to_buffer(buf, 12, adc_get_result());
-        lcd_set_ddram(0x00);
-        for(i = 0; i < 4; i++)
-            lcd_write_character(0x01);
-        lcd_set_ddram(0x00);
-        for(i = 0; buf[i] != '\0'; i++)
-            lcd_write_character(buf[i]);
-        __delay_cycles(50000);
+        digital_values[i] = AMP*adc_get_result();
+        average += digital_values[i];
+    }
+    average /= DAS;
+    for(i = 0; i < DAS; i++)
+    {
+        digital_values[i] -= average;
+        if(digital_values[i] < 0)
+            digital_values[i] *= -1;
+    }
+    average = 0;
+    for(i = 0; i < DAS; i++)
+    {
+        average += digital_values[i];
+    }
+    average /= DAS;
+}
+
+void vu_display()
+{
+    unsigned int vm = (average * 16) / 1023;
+    char i;
+    lcd_set_ddram(0x00);
+    for(i = 0; i < vm; i++)
+    {
+        lcd_write_character(0xFC);
+    }
+    for(i = 0; i < 16; i++)
+    {
+        lcd_write_character(0x01);
+    }
+    char buf[5];
+    primitive_to_buffer(buf, 5, average);
+    lcd_set_ddram(0x40);
+    for(i = 0; buf[i] != '\0'; i++)
+    {
+        lcd_write_character(buf[i]);
+    }
+    for(; i < 16; i++)
+    {
+        lcd_write_character(0x01);
     }
 }
 
@@ -61,3 +100,4 @@ int primitive_to_buffer(char *buffer, unsigned int buffer_size, int primitive)
     }
     return 1;
 }
+
