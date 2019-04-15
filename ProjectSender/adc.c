@@ -22,7 +22,7 @@ void adc_init()
 void adc_start_sample()
 {
     ADC12CTL0 |= ADC12ENC | ADC12SC;
-    result = ADC12MEM0;
+    result = (ADC12MEM0 << 2); // move range from 1023 to 4095
 }
 
 unsigned int adc_get_result()

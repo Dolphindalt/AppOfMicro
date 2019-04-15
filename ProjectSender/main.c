@@ -5,14 +5,16 @@
 #include <msp430fr5969.h>
 #include "adc.h"
 #include "dac.h"
+#include "wavelet.h"
+#include "ied.h"
 
-#define DS_LEN 500
+#define DS_LEN 250
 #define AMP 1
 #define CLK 16
 #define PERIOD (250 * CLK)
 
 unsigned int gctr = 0;
-int digital_signal[DS_LEN];
+float digital_signal[DS_LEN];
 unsigned long average = 0;
 
 void sender_init();
@@ -24,16 +26,24 @@ int main()
 	
     sender_init();
 
-    forever:
     TA0CCTL0 = CCIE;
     gctr = 0;
-    while(gctr < DS_LEN);
+    while(gctr < DS_LEN); // wait until signal is recorded
 
-    dac_send_values(digital_signal, DS_LEN);
+    int c = 0;
+    while(++c != 0) // play sound for a bit
+    {
+        int i;
+        for(i = 0; i < DS_LEN; i++)
+            dac_set_voltage(digital_signal[i], 0);
+    }
 
-    goto forever;
+    // wavelet
+    flegall53(digital_signal, DS_LEN);
 
-	return 0;
+    // transmit
+    while(1)
+        ied_burst();
 }
 
 void sender_init()

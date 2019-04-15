@@ -77,13 +77,13 @@ void i2c_send_byte(char byte)
         byte <<= 1;
         ctr++;
     }
-    // (void) i2c_read_bit();
-    clear_sda();
-    clear_scl();
-    i2c_delay();
-    set_scl();
-    i2c_delay();
-    clear_scl();
+    (void) i2c_read_bit();
+    //clear_sda();
+    //clear_scl();
+   // i2c_delay();
+   // set_scl();
+    //i2c_delay();
+    //clear_scl();
 }
 
 char i2c_read_byte()
