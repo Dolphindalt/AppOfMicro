@@ -1,31 +1,18 @@
 #include "ied.h"
 #include <msp430fr5969.h>
-
-#define IED BIT4
-#define ENABLE_IED P1OUT |= BIT4
-#define DISABLE_IED P1OUT &=(~BIT4)
-
-// bit 0 time
-#define BIT0_MIN 8000
-#define BIT0_MAX 12800
-
-// bit 1 time
-#define BIT1_MIN 24000
-#define BIT1_MAX 28800
+#include "uart.h"
 
 void ied_init()
 {
-    P1DIR |= BIT4;
-    DISABLE_IED;
-}
+    uart_init();
 
-void ied_send_high_bit()
-{
-    ENABLE_IED;
-    __delay_cycles(BIT1_MIN);
-}
+    P1DIR |= BIT2;                            // pin 1.2
+    P1SEL0 |= BIT2;
 
-void ied_send_low_bit()
-{
-
+    TA1CCR0 = 421;                            // PWM Period
+    TA1CCTL1 = OUTMOD_7;                      // CCR1 reset/set
+    TA1CCR1 = 210;                            // CCR1 PWM duty cycle
+    TA1CCTL2 = OUTMOD_7;                      // CCR2 reset/set
+    TA1CCR2 = 0;                              // CCR2 PWM duty cycle
+    TA1CTL = TASSEL__SMCLK | MC__UP | TACLR;  // SMCLK, up mode, clear TAR
 }

@@ -3,6 +3,4 @@
 
 void ied_init();
 
-void ied_burst();
-
 #endif

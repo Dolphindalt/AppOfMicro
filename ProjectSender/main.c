@@ -42,8 +42,7 @@ int main()
     flegall53(digital_signal, DS_LEN);
 
     // transmit
-    while(1)
-        ied_burst();
+    while(1);
 }
 
 void sender_init()
